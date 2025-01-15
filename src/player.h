@@ -5,4 +5,5 @@ typedef struct Player
     Vector2 position;
     Rectangle hitbox;
     bool canJump;
+    float velocityY;
 } Player;

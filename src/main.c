@@ -17,12 +17,13 @@ int main ()
 	SearchAndSetResourceDir("resources");
 
 	// textures
-	Texture2D backgroundImage = LoadTexture("background.png");
-	Texture2D floorImage = LoadTexture("floor.png");
+	Texture2D backgroundTexture = LoadTexture("background.png");
+	Texture2D floorTexture = LoadTexture("floor.png");
+	Texture2D ballTexture = LoadTexture("ball.png");
 
 	// player struct
-	Rectangle playerHitbox = {0.0f, 0.0f, 50.0f, 50.0f};
-	Rectangle floorHitbox = {0.0f, SCREEN_HEIGHT - floorImage.height, SCREEN_WIDTH, floorImage.height};
+	Rectangle playerHitbox = {0.0f, 0.0f, 64.0f, 64.0f};
+	Rectangle floorHitbox = {0.0f, SCREEN_HEIGHT - floorTexture.height, SCREEN_WIDTH, floorTexture.height};
 	Player player;
 	player.position.x = 0.0f;
 	player.position.y = 0.0f;
@@ -60,10 +61,10 @@ int main ()
 		// drawing
 		BeginDrawing();
 
-		DrawTexture(backgroundImage, 0, 0, WHITE);
+		DrawTexture(backgroundTexture, 0, 0, WHITE);
 		DrawRectangleRec(floorHitbox, WHITE);
-		DrawTexture(floorImage, 0, SCREEN_HEIGHT - floorImage.height, WHITE);
-		DrawRectangleRec(player.hitbox, RED);
+		DrawTexture(floorTexture, 0, SCREEN_HEIGHT - floorTexture.height, WHITE);
+		DrawTexture(ballTexture, player.hitbox.x, player.hitbox.y, WHITE);
 
 		if (CheckCollisionRecs(player.hitbox, floorHitbox)) {
             DrawText("Collided", 5, 5, 25, BLACK);  
@@ -73,8 +74,9 @@ int main ()
 	}
 
 	// cleanup
-	UnloadTexture(backgroundImage);
-	UnloadTexture(floorImage);
+	UnloadTexture(backgroundTexture);
+	UnloadTexture(floorTexture);
+	UnloadTexture(ballTexture);
 
 	// destroy the window and cleanup the OpenGL context
 	CloseWindow();

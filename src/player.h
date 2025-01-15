@@ -1,7 +1,6 @@
 #include "raylib.h"
 
-typedef struct Player
-{
+typedef struct Player {
     Vector2 position;
     Rectangle hitbox;
     bool canJump;

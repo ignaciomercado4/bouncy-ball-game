@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "resource_dir.h"
 #include "player.h"
+#include "door.h"
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 540
@@ -20,6 +21,7 @@ int main ()
 	Texture2D backgroundTexture = LoadTexture("background.png");
 	Texture2D floorTexture = LoadTexture("floor.png");
 	Texture2D ballTexture = LoadTexture("ball.png");
+	Texture2D doorTexture = LoadTexture("door.png");
 
 	// player struct
 	Rectangle playerHitbox = {0.0f, 0.0f, 64.0f, 64.0f};
@@ -28,6 +30,11 @@ int main ()
 	player.position.x = 0.0f;
 	player.position.y = 0.0f;
 	player.hitbox = playerHitbox;
+
+	// door struc
+	Rectangle doorHitbox = {SCREEN_WIDTH - doorTexture.width, SCREEN_HEIGHT - floorTexture.height * 2, floorTexture.width, floorTexture.height};
+	Door door;
+	door.hitbox = doorHitbox;
 
 	// physics variables
 	player.canJump = false;
@@ -61,12 +68,19 @@ int main ()
 		// drawing
 		BeginDrawing();
 
+		// drawing scene
 		DrawTexture(backgroundTexture, 0, 0, WHITE);
 		DrawRectangleRec(floorHitbox, WHITE);
 		DrawTexture(floorTexture, 0, SCREEN_HEIGHT - floorTexture.height, WHITE);
+		
+		// drawing door
+		DrawTexture(doorTexture, door.hitbox.x, door.hitbox.y, WHITE);
+
+		// ball drawing ball
 		DrawTexture(ballTexture, player.hitbox.x, player.hitbox.y, WHITE);
 
-		if (CheckCollisionRecs(player.hitbox, floorHitbox)) {
+		
+		if (CheckCollisionRecs(player.hitbox, door.hitbox)) {
             DrawText("Collided", 5, 5, 25, BLACK);  
 		}
 

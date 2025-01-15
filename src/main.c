@@ -4,6 +4,8 @@
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 540
+#define GRAVITY 0.5f
+#define JUMP_FORCE -10.0f
 
 int main ()
 {
@@ -18,7 +20,7 @@ int main ()
 	Texture2D backgroundImage = LoadTexture("background.png");
 	Texture2D floorImage = LoadTexture("floor.png");
 
-	// structures
+	// player struct
 	Rectangle playerHitbox = {0.0f, 0.0f, 50.0f, 50.0f};
 	Rectangle floorHitbox = {0.0f, SCREEN_HEIGHT - floorImage.height, SCREEN_WIDTH, floorImage.height};
 	Player player;
@@ -26,14 +28,34 @@ int main ()
 	player.position.y = 0.0f;
 	player.hitbox = playerHitbox;
 
+	// physics variables
+	player.canJump = false;
+	float velocityY = 0.0f;
+
+
 	// game loop
 	while (!WindowShouldClose())		
 	{
 		// user input
-		if (IsKeyDown(KEY_W)) player.hitbox.y -= 1.0f;
-		if (IsKeyDown(KEY_A)) player.hitbox.x -= 1.0f;
-		if (IsKeyDown(KEY_S)) player.hitbox.y += 1.0f;
-		if (IsKeyDown(KEY_D)) player.hitbox.x += 1.0f;
+		if (IsKeyDown(KEY_W) && player.canJump) {
+			velocityY = JUMP_FORCE;
+            player.canJump = false;
+		} 
+
+		if (IsKeyDown(KEY_A)) player.hitbox.x -= 2.0f;
+		if (IsKeyDown(KEY_D)) player.hitbox.x += 2.0f;
+
+		velocityY += GRAVITY;
+        player.hitbox.y += velocityY;
+
+		 // check collision with the floor
+        if (CheckCollisionRecs(player.hitbox, floorHitbox)) {
+            player.hitbox.y = floorHitbox.y - player.hitbox.height;
+            velocityY = 0.0f;
+            player.canJump = true;
+        } else {
+            player.canJump = false;
+        }
 
 		// drawing
 		BeginDrawing();

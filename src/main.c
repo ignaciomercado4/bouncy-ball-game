@@ -19,26 +19,34 @@ int main ()
 	Texture2D floorImage = LoadTexture("floor.png");
 
 	// structures
+	Rectangle playerHitbox = {0.0f, 0.0f, 50.0f, 50.0f};
+	Rectangle floorHitbox = {0.0f, SCREEN_HEIGHT - floorImage.height, SCREEN_WIDTH, floorImage.height};
 	Player player;
 	player.position.x = 0.0f;
 	player.position.y = 0.0f;
+	player.hitbox = playerHitbox;
 
 	// game loop
 	while (!WindowShouldClose())		
 	{
 		// user input
-		if (IsKeyDown(KEY_W)) player.position.y--;
-		if (IsKeyDown(KEY_A)) player.position.x--;
-		if (IsKeyDown(KEY_S)) player.position.y++;
-		if (IsKeyDown(KEY_D)) player.position.x++;
+		if (IsKeyDown(KEY_W)) player.hitbox.y -= 1.0f;
+		if (IsKeyDown(KEY_A)) player.hitbox.x -= 1.0f;
+		if (IsKeyDown(KEY_S)) player.hitbox.y += 1.0f;
+		if (IsKeyDown(KEY_D)) player.hitbox.x += 1.0f;
 
 		// drawing
 		BeginDrawing();
 
 		DrawTexture(backgroundImage, 0, 0, WHITE);
-		DrawTexture(floorImage, 0, SCREEN_HEIGHT - floorImage.height, WHITE);
-		DrawCircle(player.position.x, player.position.y, 20, RED);
-		
+		DrawRectangleRec(floorHitbox, WHITE);
+		// DrawTexture(floorImage, 0, SCREEN_HEIGHT - floorImage.height, WHITE);
+		DrawRectangleRec(player.hitbox, RED);
+
+		if (CheckCollisionRecs(player.hitbox, floorHitbox)) {
+            DrawText("Collided", 5, 5, 25, BLACK);  
+		}
+
 		EndDrawing();
 	}
 

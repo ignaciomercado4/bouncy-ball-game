@@ -40,7 +40,7 @@ int main ()
 
 		DrawTexture(backgroundImage, 0, 0, WHITE);
 		DrawRectangleRec(floorHitbox, WHITE);
-		// DrawTexture(floorImage, 0, SCREEN_HEIGHT - floorImage.height, WHITE);
+		DrawTexture(floorImage, 0, SCREEN_HEIGHT - floorImage.height, WHITE);
 		DrawRectangleRec(player.hitbox, RED);
 
 		if (CheckCollisionRecs(player.hitbox, floorHitbox)) {

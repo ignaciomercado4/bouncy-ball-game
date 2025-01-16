@@ -31,7 +31,7 @@ int main ()
 	player.position.y = 0.0f;
 	player.hitbox = playerHitbox;
 
-	// door struc
+	// door struct
 	Rectangle doorHitbox = {SCREEN_WIDTH - doorTexture.width, SCREEN_HEIGHT - floorTexture.height * 2, floorTexture.width, floorTexture.height};
 	Door door;
 	door.hitbox = doorHitbox;
@@ -40,18 +40,22 @@ int main ()
 	player.canJump = false;
 	float velocityY = 0.0f;
 
+	// gameplay variables
+	bool playerWon = false;
 
 	// game loop
 	while (!WindowShouldClose())		
 	{
 		// user input
-		if (IsKeyDown(KEY_W) && player.canJump) {
-			velocityY = JUMP_FORCE;
-            player.canJump = false;
-		} 
+		if (!playerWon) {
+			if (IsKeyDown(KEY_W) && player.canJump) {
+				velocityY = JUMP_FORCE;
+				player.canJump = false;
+			} 
 
-		if (IsKeyDown(KEY_A)) player.hitbox.x -= 2.0f;
-		if (IsKeyDown(KEY_D)) player.hitbox.x += 2.0f;
+			if (IsKeyDown(KEY_A)) player.hitbox.x -= 3.0f;
+			if (IsKeyDown(KEY_D)) player.hitbox.x += 3.0f;
+		}
 
 		velocityY += GRAVITY;
         player.hitbox.y += velocityY;
@@ -68,20 +72,37 @@ int main ()
 		// drawing
 		BeginDrawing();
 
-		// drawing scene
-		DrawTexture(backgroundTexture, 0, 0, WHITE);
-		DrawRectangleRec(floorHitbox, WHITE);
-		DrawTexture(floorTexture, 0, SCREEN_HEIGHT - floorTexture.height, WHITE);
-		
-		// drawing door
-		DrawTexture(doorTexture, door.hitbox.x, door.hitbox.y, WHITE);
+		if (!playerWon) {
+			// drawing scene
+			DrawTexture(backgroundTexture, 0, 0, WHITE);
+			DrawRectangleRec(floorHitbox, WHITE);
+			DrawTexture(floorTexture, 0, SCREEN_HEIGHT - floorTexture.height, WHITE);
+			
+			// drawing door
+			DrawTexture(doorTexture, door.hitbox.x, door.hitbox.y, WHITE);
 
-		// ball drawing ball
-		DrawTexture(ballTexture, player.hitbox.x, player.hitbox.y, WHITE);
+			// ball drawing ball
+			DrawTexture(ballTexture, player.hitbox.x, player.hitbox.y, WHITE);
 
-		
-		if (CheckCollisionRecs(player.hitbox, door.hitbox)) {
-            DrawText("Collided", 5, 5, 25, BLACK);  
+			
+			if (CheckCollisionRecs(player.hitbox, door.hitbox) && IsKeyPressed(KEY_ENTER)) {
+				playerWon = true;
+			}
+		}
+
+		if (playerWon) {
+			// drawing scene
+			DrawTexture(backgroundTexture, 0, 0, WHITE);
+			DrawRectangleRec(floorHitbox, WHITE);
+			DrawTexture(floorTexture, 0, SCREEN_HEIGHT - floorTexture.height, WHITE);
+			
+			// drawing door
+			DrawTexture(doorTexture, door.hitbox.x, door.hitbox.y, WHITE);
+
+			// ball drawing ball
+			DrawTexture(ballTexture, player.hitbox.x, player.hitbox.y, WHITE);
+			DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){0, 255, 0, 125});
+			DrawText("You won!", SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 40, GREEN);
 		}
 
 		EndDrawing();
